@@ -204,3 +204,91 @@ function StartGame() {
 }
 
 export default StartGame;
+
+// Calculate point
+const checkAddPoint = (board) => {
+  let listPoint = [];
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    const listItem = board[i];
+    const point =
+      listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
+        ?.length * 5;
+    if (listItem?.length > 0) {
+      listPoint?.push(point);
+    }
+  }
+
+  const finalPoint = listPoint.reduce((total, currentValue) => {
+    return total + currentValue;
+  });
+
+  setPoint(finalPoint);
+};
+
+/* 
+// Handle select
+const handleChangeLevel = (level) => {
+  setLevelMine(level);
+  const parentDiv = document.querySelector(".board");
+  while (parentDiv.firstChild) {
+    parentDiv.removeChild(parentDiv.firstChild);
+  }
+  displayBoard(level);
+};
+*/
+
+// Store data in local storage
+const handleStoreData = (score) => {
+  const getList = JSON.parse(localStorage.getItem("listUserPlay"));
+
+  if (getList?.length > 0) {
+    let listExist = [];
+    for (let i = 0; i < getList?.length; i++) {
+      listExist.push(getList[i]);
+    }
+    const userPlayedNext = {
+      id: getList?.length + 1,
+      user: "Song Tuan",
+      point: point ?? score,
+      level: levelMine,
+    };
+    listExist.push(userPlayedNext);
+    localStorage.setItem("listUserPlay", JSON.stringify(listExist));
+  } else {
+    const userPlay = {
+      id: 1,
+      user: "Song Tuan",
+      point: point ?? score,
+      level: levelMine,
+    };
+    let listCreate = [];
+    listCreate.push(userPlay);
+    localStorage.setItem("listUserPlay", JSON.stringify(listCreate));
+  }
+};
+
+// Handle take point
+const handleTakePoint = (board) => {
+  setIsStart(false);
+  setIsModalOpen(true);
+
+  let listTest = [];
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    const listItem = board[i];
+    const point =
+      listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
+        ?.length * 5;
+    if (listItem?.length > 0) {
+      listTest?.push(point);
+    }
+  }
+
+  const finalPoint = listTest.reduce((total, currentValue) => {
+    return total + currentValue;
+  });
+
+  handleStoreData(finalPoint);
+};
+// End
