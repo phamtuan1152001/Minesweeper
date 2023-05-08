@@ -205,7 +205,7 @@ function StartGame() {
 
 export default StartGame;
 
-// Calculate point
+// Calculate point - Diem Quyen
 const checkAddPoint = (board) => {
   let listPoint = [];
 
@@ -268,7 +268,7 @@ const handleStoreData = (score) => {
   }
 };
 
-// Handle take point
+// Handle take point - Diem Quyen
 const handleTakePoint = (board) => {
   setIsStart(false);
   setIsModalOpen(true);
