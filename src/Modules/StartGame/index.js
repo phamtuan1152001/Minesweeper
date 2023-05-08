@@ -2,7 +2,6 @@ import "./index.scss";
 import "./style.css";
 
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 
 // @constants
 import { TILE_STATUS, BOARD_SIZE /* , LEVEL_MINE */ } from "./constants";
@@ -16,67 +15,20 @@ import {
   positionMatch,
 } from "./minesweeper";
 
-
 // antd
-import { Button, Modal, Select } from "antd";
-
-// hooks
-import { useCountDown } from "../../utility/hooks/useCountDown";
+import { Button } from "antd";
 
 function StartGame() {
-  const [point, setPoint] = useState();
-  // const [levelMine, setLevelMine] = useState(LEVEL_MINE[0].value);
-
   const [isBoard, setIsBoard] = useState(false);
-  const [isStart, setIsStart] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [titleModal, setTitleModal] = useState("");
-  const [descriptionModal, setDescriptionModal] = useState("");
 
-  const [itemClicked, setItemClicked] = useState([]);
   const [tableBoard, setTableBoard] = useState([]);
-
-  const showModal = () => {
-    handleStoreData();
-    setIsStart(false);
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+  const [itemClicked, setItemClicked] = useState([]);
 
   useEffect(() => {
     if (!isBoard) {
       displayBoard(1);
     }
   });
-
-  // Count down
-  const countDown = useCountDown({
-    isStart,
-    initValue: 1000 * 120 /* 10 */,
-  });
-
-  useEffect(() => {
-    if (countDown !== 0) {
-      setIsStart(/* true */ false);
-    } else {
-      setTitleModal("Times up");
-      setDescriptionModal("Please press continue to start a new game");
-      showModal();
-    }
-  }, [countDown]);
-
-  const getTimeString = (time = 0) => {
-    return `${moment.duration(time).minutes() < 10
-      ? "0" + moment.duration(time).minutes()
-      : moment.duration(time).minutes()
-      }:${moment.duration(time).seconds() < 10
-        ? "0" + moment.duration(time).seconds()
-        : moment.duration(time).seconds()
-      }`;
-  };
 
   // Display board
   const displayBoard = (numberMines) => {
@@ -112,7 +64,7 @@ function StartGame() {
             handleTakePoint(board);
           }
           // End
-          */
+					*/
         });
 
         // Right click
@@ -222,55 +174,22 @@ function StartGame() {
 
   return (
     <React.Fragment>
-      <Modal
-        title=""
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        maskClosable={false}
-        closable={false}
-        keyboard={false}
-        footer={null}
-        className="pop-up-container"
-        centered
-      >
-        <div className="popup-announce">
-          <h2>{titleModal}</h2>
-          <h3>{descriptionModal}</h3>
-          <div className="btn-redirect d-flex flex-row justify-content-center align-items-center gap-3">
-            <Button
-              onClick={() => {
-                window.location.href = "/";
-              }}
-            >
-              Back to homepage
-            </Button>
-            <Button
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
-      </Modal>
       <h3 className="title">Minesweeper</h3>
       <div className="subtext">
         Mines Left: <span data-mine-count></span>
       </div>
       <div className="information">
         {/* <div className="d-flex flex-row justify-content-center align-items-center gap-4">
-  //           <Select
-  //             defaultValue="Easy"
-  //             style={{ width: 120 }}
-  //             onChange={(e) => handleChangeLevel(e)}
-  //             options={LEVEL_MINE}
-  //           />
-  //           <h3 className="point mb-0">Your point: {point}</h3>
-  //         </div> */}
+          <Select
+            defaultValue="Easy"
+            style={{ width: 120 }}
+            onChange={(e) => handleChangeLevel(e)}
+            options={LEVEL_MINE}
+          />
+          <h3 className="point mb-0">Your point: {point}</h3>
+        </div> */}
         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
-          <h3 className="countdown">{getTimeString(countDown)}</h3>
+          {/* <h3 className="countdown">{getTimeString(countDown)}</h3> */}
           <Button
             onClick={() => handleUndoAction()}
             disabled={itemClicked?.length > 0 ? false : true}
@@ -282,8 +201,7 @@ function StartGame() {
       <div className="board"></div>
     </React.Fragment>
   );
-};
-
+}
 
 export default StartGame;
 
@@ -305,7 +223,7 @@ const checkAddPoint = (board) => {
     return total + currentValue;
   });
 
-  // setPoint(finalPoint);
+  setPoint(finalPoint);
 };
 
 /* 
