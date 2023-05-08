@@ -2,7 +2,8 @@ import "./index.scss";
 import "./style.css";
 
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+
+import moment from "moment/moment";
 
 // @constants
 import { TILE_STATUS, BOARD_SIZE, LEVEL_MINE } from "./constants";
