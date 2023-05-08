@@ -5,27 +5,26 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 
 // @constants
-import { TILE_STATUS, BOARD_SIZE /* , LEVEL_MINE */ } from "./constants";
+import { TILE_STATUS, BOARD_SIZE, LEVEL_MINE } from "./constants";
 
 // @action logic game
 import {
   markTile,
   revealTile,
-  checkWinOrLoose,
+  // checkWinOrLoose,
   getMinePosition,
   positionMatch,
 } from "./minesweeper";
 
-
 // antd
-import { Button, Modal, Select } from "antd";
+import { Button, Modal /* , Select */ } from "antd";
 
 // hooks
 import { useCountDown } from "../../utility/hooks/useCountDown";
 
 function StartGame() {
   const [point, setPoint] = useState();
-  // const [levelMine, setLevelMine] = useState(LEVEL_MINE[0].value);
+  const [levelMine, setLevelMine] = useState(LEVEL_MINE[0].value);
 
   const [isBoard, setIsBoard] = useState(false);
   const [isStart, setIsStart] = useState(false);
@@ -36,6 +35,7 @@ function StartGame() {
   const [itemClicked, setItemClicked] = useState([]);
   const [tableBoard, setTableBoard] = useState([]);
 
+  // Nguyen Duc Tri
   const showModal = () => {
     handleStoreData();
     setIsStart(false);
@@ -48,7 +48,7 @@ function StartGame() {
 
   useEffect(() => {
     if (!isBoard) {
-      displayBoard(1);
+      displayBoard(LEVEL_MINE[0].value);
     }
   });
 
@@ -60,7 +60,7 @@ function StartGame() {
 
   useEffect(() => {
     if (countDown !== 0) {
-      setIsStart(/* true */ false);
+      setIsStart(true /* false */);
     } else {
       setTitleModal("Times up");
       setDescriptionModal("Please press continue to start a new game");
@@ -69,18 +69,23 @@ function StartGame() {
   }, [countDown]);
 
   const getTimeString = (time = 0) => {
-    return `${moment.duration(time).minutes() < 10
-      ? "0" + moment.duration(time).minutes()
-      : moment.duration(time).minutes()
-      }:${moment.duration(time).seconds() < 10
+    return `${
+      moment.duration(time).minutes() < 10
+        ? "0" + moment.duration(time).minutes()
+        : moment.duration(time).minutes()
+    }:${
+      moment.duration(time).seconds() < 10
         ? "0" + moment.duration(time).seconds()
         : moment.duration(time).seconds()
-      }`;
+    }`;
   };
+  // End
 
+  // Pham Le Song Tuan
   // Display board
   const displayBoard = (numberMines) => {
     const board = createBoard(BOARD_SIZE, numberMines);
+    // console.log("board", board);
     setTableBoard(board);
 
     const boardElement = document.querySelector(".board");
@@ -97,11 +102,9 @@ function StartGame() {
         // Left click
         tile.element.addEventListener("click", () => {
           revealTile(board, tile);
-          // checkAddPoint(board);
+          checkAddPoint(board);
           checkWinOrLoose(boardElement, board, messsageText);
           handleUndo(board);
-
-          /*
           // Fix bug tạm thời chỗ k có state point khi ấn vô quả bom
           if (tile.mine) {
             setTitleModal("You loose");
@@ -112,7 +115,6 @@ function StartGame() {
             handleTakePoint(board);
           }
           // End
-          */
         });
 
         // Right click
@@ -140,6 +142,7 @@ function StartGame() {
   const createBoard = (squareSize, mineSize) => {
     const square = [];
     const minePositions = getMinePosition(squareSize, mineSize);
+    // console.log("minePositions", minePositions);
 
     for (let x = 0; x < squareSize; x++) {
       const row = [];
@@ -170,7 +173,6 @@ function StartGame() {
     return square;
   };
 
-  // Undo
   let count = 0;
 
   const handleUndo = (boardArr) => {
@@ -214,10 +216,153 @@ function StartGame() {
       }
       item.status = TILE_STATUS.HIDDEN;
     });
-
     const filterData = itemClicked?.filter((item) => item?.id !== curData?.id);
     setItemClicked(filterData);
-    // checkAddPoint(tableBoard);
+    checkAddPoint(tableBoard);
+    /* ----- */
+    // return curData?.selectedData?.map(
+    //   (item) => (item.status = TILE_STATUS.HIDDEN)
+    // );
+  };
+  // End
+
+  // Diem Quyen Tran
+  // Calculate point
+  const checkAddPoint = (board) => {
+    let listPoint = [];
+
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      const listItem = board[i];
+      const point =
+        listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
+          ?.length * 5;
+      if (listItem?.length > 0) {
+        listPoint?.push(point);
+      }
+    }
+
+    const finalPoint = listPoint.reduce((total, currentValue) => {
+      return total + currentValue;
+    });
+
+    setPoint(finalPoint);
+  };
+
+  // Store data in local storage
+  const handleStoreData = (score) => {
+    const getList = JSON.parse(localStorage.getItem("listUserPlay"));
+
+    if (getList?.length > 0) {
+      let listExist = [];
+      for (let i = 0; i < getList?.length; i++) {
+        listExist.push(getList[i]);
+      }
+      const userPlayedNext = {
+        id: getList?.length + 1,
+        user: "Song Tuan",
+        point: point ?? score,
+        level: levelMine,
+      };
+      listExist.push(userPlayedNext);
+      localStorage.setItem("listUserPlay", JSON.stringify(listExist));
+    } else {
+      const userPlay = {
+        id: 1,
+        user: "Song Tuan",
+        point: point ?? score,
+        level: levelMine,
+      };
+      let listCreate = [];
+      listCreate.push(userPlay);
+      localStorage.setItem("listUserPlay", JSON.stringify(listCreate));
+    }
+  };
+
+  // Handle take point
+  const handleTakePoint = (board) => {
+    setIsStart(false);
+    setIsModalOpen(true);
+
+    let listTest = [];
+
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      const listItem = board[i];
+      const point =
+        listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
+          ?.length * 5;
+      if (listItem?.length > 0) {
+        listTest?.push(point);
+      }
+    }
+
+    const finalPoint = listTest.reduce((total, currentValue) => {
+      return total + currentValue;
+    });
+
+    handleStoreData(finalPoint);
+  };
+  // End
+
+  // Handle check Win or Lose
+  const checkWinOrLoose = (boardElement, board, messsageText) => {
+    const win = checkWin(board);
+    const loose = checkLoose(board);
+
+    if (win || loose) {
+      boardElement.addEventListener("click", stopProp, { capture: true });
+      boardElement.addEventListener("contextmenu", stopProp, { capture: true });
+    }
+
+    if (win) {
+      messsageText.textContent = "You Win";
+      setTitleModal("You win");
+      setDescriptionModal(
+        "Please press continue to store your point and start a new game"
+      );
+      // showModal();
+      // Fix bug tạm thời chỗ k có state point khi ấn vô quả bom
+      handleTakePoint(board);
+      // End
+    }
+
+    if (loose) {
+      messsageText.textContent = "You Loose";
+      board.forEach((row) => {
+        row.forEach((squ) => {
+          if (squ.status === TILE_STATUS.MARKED) {
+            markTile(squ);
+          }
+          if (squ.mine) {
+            revealTile(board, squ);
+          }
+        });
+      });
+    }
+  };
+
+  const stopProp = (e) => {
+    e.stopImmediatePropagation();
+  };
+
+  const checkWin = (bo) => {
+    return bo.every((row) => {
+      return row.every((square) => {
+        return (
+          square.status === TILE_STATUS.NUMBER ||
+          (square.mine &&
+            (square.status === TILE_STATUS.HIDDEN ||
+              square.status === TILE_STATUS.MARKED))
+        );
+      });
+    });
+  };
+
+  const checkLoose = (bo) => {
+    return bo.some((row) => {
+      return row.some((square) => {
+        return square.status === TILE_STATUS.MINE;
+      });
+    });
   };
 
   return (
@@ -226,8 +371,8 @@ function StartGame() {
         title=""
         open={isModalOpen}
         onOk={handleOk}
-        onCancel={handleCancel}
-        maskClosable={false}
+        // onCancel={handleCancel}
+        // maskClosable={false}
         closable={false}
         keyboard={false}
         footer={null}
@@ -260,15 +405,15 @@ function StartGame() {
         Mines Left: <span data-mine-count></span>
       </div>
       <div className="information">
-        {/* <div className="d-flex flex-row justify-content-center align-items-center gap-4">
-  //           <Select
-  //             defaultValue="Easy"
-  //             style={{ width: 120 }}
-  //             onChange={(e) => handleChangeLevel(e)}
-  //             options={LEVEL_MINE}
-  //           />
-  //           <h3 className="point mb-0">Your point: {point}</h3>
-  //         </div> */}
+        <div className="d-flex flex-row justify-content-center align-items-center gap-4">
+          {/* <Select
+            defaultValue="Easy"
+            style={{ width: 120 }}
+            onChange={(e) => handleChangeLevel(e)}
+            options={LEVEL_MINE}
+          /> */}
+          <h3 className="point mb-0">Your point: {point}</h3>
+        </div>
         <div className="d-flex flex-row justify-content-center align-items-center gap-3">
           <h3 className="countdown">{getTimeString(countDown)}</h3>
           <Button
@@ -282,95 +427,6 @@ function StartGame() {
       <div className="board"></div>
     </React.Fragment>
   );
-};
-
+}
 
 export default StartGame;
-
-// Calculate point
-const checkAddPoint = (board) => {
-  let listPoint = [];
-
-  for (let i = 0; i < BOARD_SIZE; i++) {
-    const listItem = board[i];
-    const point =
-      listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
-        ?.length * 5;
-    if (listItem?.length > 0) {
-      listPoint?.push(point);
-    }
-  }
-
-  const finalPoint = listPoint.reduce((total, currentValue) => {
-    return total + currentValue;
-  });
-
-  // setPoint(finalPoint);
-};
-
-/* 
-// Handle select
-const handleChangeLevel = (level) => {
-  setLevelMine(level);
-  const parentDiv = document.querySelector(".board");
-  while (parentDiv.firstChild) {
-    parentDiv.removeChild(parentDiv.firstChild);
-  }
-  displayBoard(level);
-};
-*/
-
-// Store data in local storage
-const handleStoreData = (score) => {
-  const getList = JSON.parse(localStorage.getItem("listUserPlay"));
-
-  if (getList?.length > 0) {
-    let listExist = [];
-    for (let i = 0; i < getList?.length; i++) {
-      listExist.push(getList[i]);
-    }
-    const userPlayedNext = {
-      id: getList?.length + 1,
-      user: "Song Tuan",
-      point: point ?? score,
-      level: levelMine,
-    };
-    listExist.push(userPlayedNext);
-    localStorage.setItem("listUserPlay", JSON.stringify(listExist));
-  } else {
-    const userPlay = {
-      id: 1,
-      user: "Song Tuan",
-      point: point ?? score,
-      level: levelMine,
-    };
-    let listCreate = [];
-    listCreate.push(userPlay);
-    localStorage.setItem("listUserPlay", JSON.stringify(listCreate));
-  }
-};
-
-// Handle take point
-const handleTakePoint = (board) => {
-  setIsStart(false);
-  setIsModalOpen(true);
-
-  let listTest = [];
-
-  for (let i = 0; i < BOARD_SIZE; i++) {
-    const listItem = board[i];
-    const point =
-      listItem?.filter((item) => item?.status === TILE_STATUS.NUMBER)
-        ?.length * 5;
-    if (listItem?.length > 0) {
-      listTest?.push(point);
-    }
-  }
-
-  const finalPoint = listTest.reduce((total, currentValue) => {
-    return total + currentValue;
-  });
-
-  handleStoreData(finalPoint);
-};
-// End
