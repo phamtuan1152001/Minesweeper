@@ -6,7 +6,7 @@ import { Route, Routes } from "react-router-dom";
 
 // @page
 import Home from "./Modules/Home";
-import Ranking from "./Modules/Ranking";
+import Ranking from "./Modules/Ranking/";
 import Setting from "./Modules/Setting";
 import StartGame from "./Modules/StartGame";
 
