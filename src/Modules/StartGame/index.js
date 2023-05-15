@@ -4,6 +4,7 @@ import "./style.css";
 import React, { useEffect, useState } from "react";
 
 import moment from "moment/moment";
+import { useLocation } from "react-router-dom";
 
 // @constants
 import { TILE_STATUS, BOARD_SIZE, LEVEL_MINE } from "./constants";
@@ -24,8 +25,14 @@ import { Button, Modal /* , Select */ } from "antd";
 import { useCountDown } from "../../utility/hooks/useCountDown";
 
 function StartGame() {
+  const location = useLocation();
+
+  const { playName, level } = location.state || {};
+
+  // console.log("location", location.state);
+
   const [point, setPoint] = useState();
-  const [levelMine, setLevelMine] = useState(LEVEL_MINE[0].value);
+  const [levelMine, setLevelMine] = useState(level);
 
   const [isBoard, setIsBoard] = useState(false);
   const [isStart, setIsStart] = useState(false);
@@ -49,7 +56,7 @@ function StartGame() {
 
   useEffect(() => {
     if (!isBoard) {
-      displayBoard(LEVEL_MINE[0].value);
+      displayBoard(level);
     }
   });
 
@@ -260,7 +267,7 @@ function StartGame() {
       }
       const userPlayedNext = {
         id: getList?.length + 1,
-        user: "Song Tuan",
+        user: playName,
         point: point ?? score,
         level: levelMine,
       };
@@ -269,7 +276,7 @@ function StartGame() {
     } else {
       const userPlay = {
         id: 1,
-        user: "Song Tuan",
+        user: playName,
         point: point ?? score,
         level: levelMine,
       };
@@ -402,6 +409,12 @@ function StartGame() {
         </div>
       </Modal>
       <h3 className="title">Minesweeper</h3>
+      <div className="d-flex flex-row justify-content-center align-items-center gap-3">
+        <h4>
+          Hello {playName} - Level{" "}
+          {LEVEL_MINE?.find((item) => item.value === level)?.label}
+        </h4>
+      </div>
       <div className="subtext">
         Mines Left: <span data-mine-count></span>
       </div>

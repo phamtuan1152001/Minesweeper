@@ -2,24 +2,33 @@ import "./App.css";
 
 import React from "react";
 
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 // @page
-import Home from "./Modules/Home";
-import Ranking from "./Modules/Ranking";
-import Setting from "./Modules/Setting";
-import StartGame from "./Modules/StartGame";
+import HomePage from "./Modules/Home";
+import RankingPage from "./Modules/Ranking";
+import StartGamePage from "./Modules/StartGame";
+// import Setting from "./Modules/Setting";
+
+{
+  /* <Switch>
+    <Route path="/" element={<Home />} />
+    <Route path="/ranking" element={<Ranking />} />
+    <Route path="/setting" element={<Setting />} />
+    <Route path="/startgame" element={<StartGame />} />
+  </Switch>
+  </React.Fragment> */
+}
 
 function App() {
   return (
-    <React.Fragment>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/ranking" element={<Ranking />} />
-        <Route path="/setting" element={<Setting />} />
-        <Route path="/startgame" element={<StartGame />} />
-      </Routes>
-    </React.Fragment>
+    <Router>
+      <Switch>
+        <Route path="/" exact={true} component={HomePage} />
+        <Route path="/startgame" exact={true} component={StartGamePage} />
+        <Route path="/ranking" exact={true} component={RankingPage} />
+      </Switch>
+    </Router>
   );
 }
 

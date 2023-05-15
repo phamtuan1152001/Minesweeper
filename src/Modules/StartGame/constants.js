@@ -12,7 +12,7 @@ export const LEVEL_MINE = [
   {
     id: 1,
     label: "Easy",
-    value: 1,
+    value: 5,
   },
   {
     id: 2,
