@@ -1,51 +1,102 @@
 import React, {useState} from 'react'
-import MOCK_DATA from '../Ranking/MOCK_DATA.json'
-import '../Ranking/'
+import {data} from './users'
+import "./table.css"
+import {FaArrowUp, FaArrowDown} from "react-icons/fa"
 
 function Ranking() {
-  const [data, setdata] = useState(MOCK_DATA);
-  const [order, setorder] = useState("ASC");
-  //sorting
-  const sorting = (col) => {
-    if(order === "ASC"){
-      const sorted = [...data].sort((a,b) => 
-      a[col].toLowerCase() > b[col].toLowerCase() ? 1: -1);
-      setdata(sorted);
-      setorder("DSC");
-    }
-    if(order === "DSC"){
-      const sorted = [...data].sort((a,b) => 
-      a[col].toLowerCase() < b[col].toLowerCase() ? 1: -1);
-      setdata(sorted);
-      setorder("ASC");
-    }   
+  const [users, setUsers] = useState(data);
+  const [sorted, setSorted] = useState({sorted: "id", reversed: false});
+  const [searchPhase, setSearchPhase] = useState("");
+
+  const sortById =() => {
+    setSorted({sorted: "id", reversed: !sorted.reversed});
+    const usersCopy = [...users];
+    usersCopy.sort((user1, user2) =>{
+      if(sorted.reversed){
+        return user1.id - user2.id;
+      }
+      return user2.id - user1.id;
+    });
+    setUsers(usersCopy);
+  };
+
+  const sortByName =() => {
+    setSorted({sorted: "name", reversed: !sorted.reversed});
+    const usersCopy = [...users];
+    usersCopy.sort((user1, user2) =>{
+      const fullnameA = `${user1.first_name} ${user2.last_name}`;
+      const fullnameB = `${user2.first_name} ${user1.last_name}`;
+
+      if (sorted.reversed){
+        return fullnameB.localeCompare(fullnameA);
+      }
+      return fullnameA.localeCompare(fullnameB);
+    });
+    setUsers(usersCopy);
+  };
+
+  const search = (event) => {
+    const matchedUsers = data.filter((user) => {
+      return`${user.first_name} ${user.last_name}`
+      .toLowerCase()
+      .includes(event.target.value.toLowerCase());
+    });
+    setUsers(matchedUsers);
+    setSearchPhase(event.target.value);
   }
 
-  //searching
-  const [query, setQuery] = useState("");
+  const renderUser = () => {
+    return users.map((user) => {
+      return (
+        <tr>
+            <td>{user.id}</td>
+            <td>{ `${user.first_name} ${user.last_name}` }</td>
+            <td>{user.ingame}</td>
+            <td>{user.level}</td>
+        </tr>
+      );
+    });
+  };
+
+  const renderArrow = () => {
+    if (sorted.reversed){
+      return <FaArrowUp/>
+    }
+    return <FaArrowDown/>
+  };
+
   return (
-    <div className='container'>
-      <div className='app'>
-        <input type='text' placeholder='Search...' className='search' onChange={e => setQuery(e.target.value)}/>
+    <div className="app">
+      <div className="search-container">
+        <input 
+        type = "text" 
+        placeholder="Search..." 
+        value = {searchPhase} 
+        onChange={search}/>
       </div>
-      <table>
-        <thead>
-          <th onClick = {() => sorting("first_name")}>FirstName</th>
-          <th>Lastname</th>
-          <th>Ingame</th>
-          <th>Level</th>
-        </thead>
-        <tbody>
-          {data.map((d) => (
-            <tr key = {d.id}>
-              <td>{d.first_name}</td>
-              <td>{d.last_name}</td>
-              <td>{d.ingame}</td>
-              <td>{d.level}</td>
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th onClick={sortById}>
+                <span style={{marginRight: 10}}>Id</span>
+                {sorted.sorted === "id" ? renderArrow() : null}
+              </th>
+              <th onClick={sortByName}>
+                <span style={{marginRight: 10}}>Name</span>
+                {sorted.sorted === "name" ? renderArrow() : null}
+              </th>
+              <th>
+                <span>Ingame</span>
+              </th>
+              <th>
+                <span>Level</span>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>{renderUser()}</tbody>
+        </table>
+      </div>
     </div>
   )
 }

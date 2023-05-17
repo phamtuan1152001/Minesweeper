@@ -1,4 +1,4 @@
-[{"id":1,"first_name":"Bonnee","last_name":"Cowitz","ingame":"bcowitz0","level":1,"ip_address":"145.68.36.49"},
+export const data = [{"id":1,"first_name":"Bonnee","last_name":"Cowitz","ingame":"bcowitz0","level":1,"ip_address":"145.68.36.49"},
 {"id":2,"first_name":"Codie","last_name":"Efford","ingame":"cefford1","level":3,"ip_address":"157.113.72.240"},
 {"id":3,"first_name":"Lelah","last_name":"Malpas","ingame":"lmalpas2","level":2,"ip_address":"196.23.147.233"},
 {"id":4,"first_name":"Sammy","last_name":"Blackburne","ingame":"sblackburne3","level":1,"ip_address":"243.77.5.207"},
