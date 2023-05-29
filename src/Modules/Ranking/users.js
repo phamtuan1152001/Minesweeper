@@ -1,4 +1,4 @@
-export const data = [{"id":1,"first_name":"Bonnee","last_name":"Cowitz","ingame":"bcowitz0","level":1,"ip_address":"145.68.36.49"},
+/*export const data = [{"id":1,"first_name":"Bonnee","last_name":"Cowitz","ingame":"bcowitz0","level":1,"ip_address":"145.68.36.49"},
 {"id":2,"first_name":"Codie","last_name":"Efford","ingame":"cefford1","level":3,"ip_address":"157.113.72.240"},
 {"id":3,"first_name":"Lelah","last_name":"Malpas","ingame":"lmalpas2","level":2,"ip_address":"196.23.147.233"},
 {"id":4,"first_name":"Sammy","last_name":"Blackburne","ingame":"sblackburne3","level":1,"ip_address":"243.77.5.207"},
@@ -27,4 +27,4 @@ export const data = [{"id":1,"first_name":"Bonnee","last_name":"Cowitz","ingame"
 {"id":27,"first_name":"Gwen","last_name":"Hugonnet","ingame":"ghugonnetq","level":3,"ip_address":"177.195.104.78"},
 {"id":28,"first_name":"Hall","last_name":"Govey","ingame":"hgoveyr","level":3,"ip_address":"167.114.220.234"},
 {"id":29,"first_name":"Donnajean","last_name":"Fader","ingame":"dfaders","level":3,"ip_address":"239.9.113.206"},
-{"id":30,"first_name":"Rafaellle","last_name":"Findlater","ingame":"rfindlatert","level":3,"ip_address":"161.140.109.136"}]
+{"id":30,"first_name":"Rafaellle","last_name":"Findlater","ingame":"rfindlatert","level":3,"ip_address":"161.140.109.136"}]*/

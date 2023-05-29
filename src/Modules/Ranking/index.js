@@ -4,7 +4,7 @@ import "./table.css"
 import {FaArrowUp, FaArrowDown} from "react-icons/fa"
 
 function Ranking() {
-  const [users, setUsers] = useState(data);
+  const [users, setUsers] = useState("");
   const [sorted, setSorted] = useState({sorted: "id", reversed: false});
   const [searchPhase, setSearchPhase] = useState("");
 
@@ -45,6 +45,13 @@ function Ranking() {
     setSearchPhase(event.target.value);
   }
 
+ const renderArrow = () => {
+    if (sorted.reversed){
+      return <FaArrowUp/>
+    }
+    return <FaArrowDown/>
+  };
+  
   const renderUser = () => {
     return users.map((user) => {
       return (
@@ -58,12 +65,34 @@ function Ranking() {
     });
   };
 
-  const renderArrow = () => {
-    if (sorted.reversed){
-      return <FaArrowUp/>
-    }
-    return <FaArrowDown/>
-  };
+
+  /*const renderPlayer = () => {
+    let listCreate = localStorage.getItem("listUserPlay") ? JSON.parse(localStorage.getItem("listUserPlay")) : []
+    let table = `<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Points</th>
+    <th>Level</th>
+    </tr>`
+
+    listCreate.map(data, index => {
+       table += `<tr>
+      <td>${index + 1 }</td>
+      <td>${data.user}</td>
+      <td>${data.point}</td>
+      <td>${data.level}</td>
+      </tr>`
+    });
+    document.getElementById('tableContent').innerHTML = table;
+  }
+
+  return(
+    <div className="container">
+      <table className="table-container" id='tableContent'>
+        {renderPlayer()}
+      </table>
+    </div>
+  )*/
 
   return (
     <div className="app">
@@ -75,7 +104,7 @@ function Ranking() {
         onChange={search}/>
       </div>
       <div className="table-container">
-        <table>
+        <table id='crudTable'>
           <thead>
             <tr>
               <th onClick={sortById}>
@@ -94,7 +123,9 @@ function Ranking() {
               </th>
             </tr>
           </thead>
-          <tbody>{renderUser()}</tbody>
+          <tbody>
+            {renderUser()}
+          </tbody>
         </table>
       </div>
     </div>
