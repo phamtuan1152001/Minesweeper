@@ -31,7 +31,7 @@ function Ranking() {
     setSorted({ sorted: "name", reversed: !sorted.reversed });
     const usersCopy = [...users];
     usersCopy.sort((user1, user2) => {
-      const fullnameA = `${user1.first_name} ${user2.last_name}`;
+      const fullnameA = `${user1.user} ${user2.last_name}`;
       const fullnameB = `${user2.first_name} ${user1.last_name}`;
 
       if (sorted.reversed) {
@@ -44,7 +44,7 @@ function Ranking() {
 
   const search = (event) => {
     const matchedUsers = data.filter((user) => {
-      return `${user.first_name} ${user.last_name}`
+      return `${user.user}`
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
     });
