@@ -15,14 +15,15 @@ function Ranking() {
     setUsers(list);
   }, []);
   console.log("users", users);
-  const sortById = () => {
-    setSorted({ sorted: "id", reversed: !sorted.reversed });
+
+  const sortByPoint = () => {
+    setSorted({ sorted: "point", reversed: !sorted.reversed });
     const usersCopy = [...users];
     usersCopy.sort((user1, user2) => {
       if (sorted.reversed) {
-        return user1.id - user2.id;
+        return user1.point - user2.point;
       }
-      return user2.id - user1.id;
+      return user2.point - user1.point;
     });
     setUsers(usersCopy);
   };
@@ -31,8 +32,8 @@ function Ranking() {
     setSorted({ sorted: "name", reversed: !sorted.reversed });
     const usersCopy = [...users];
     usersCopy.sort((user1, user2) => {
-      const fullnameA = `${user1.user} ${user2.last_name}`;
-      const fullnameB = `${user2.first_name} ${user1.last_name}`;
+      const fullnameA = `${user1.user}`
+      const fullnameB = `${user2.user}`
 
       if (sorted.reversed) {
         return fullnameB.localeCompare(fullnameA);
@@ -43,7 +44,7 @@ function Ranking() {
   };
 
   const search = (event) => {
-    const matchedUsers = data.filter((user) => {
+    const matchedUsers = users.filter((user) => {
       return `${user.user}`
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
@@ -116,16 +117,16 @@ function Ranking() {
         <table id="crudTable">
           <thead>
             <tr>
-              <th onClick={sortById}>
-                <span style={{ marginRight: 10 }}>Id</span>
-                {sorted.sorted === "id" ? renderArrow() : null}
+              <th>
+                <span>Id</span>
               </th>
               <th onClick={sortByName}>
                 <span style={{ marginRight: 10 }}>Name</span>
                 {sorted.sorted === "name" ? renderArrow() : null}
               </th>
-              <th>
-                <span>Point</span>
+              <th onClick={sortByPoint}>
+                <span style={{ marginRight: 10 }}>Point</span>
+                {sorted.sorted === "point" ? renderArrow() : null}
               </th>
               <th>
                 <span>Level</span>
